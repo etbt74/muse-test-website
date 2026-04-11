@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Muse Hair Salon — Where Beauty Becomes Art</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#1E1E26',
+            gold: '#C5A158',
+            'gold-light': '#D4B878',
+            'gold-muted': '#A8895A',
+            cream: '#F7F3EC',
+            'cream-dark': '#EDE8DF',
+            rose: '#C98880',
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['Montserrat', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Montserrat', sans-serif; background: #F7F3EC; color: #1E1E26; overflow-x: hidden; }
+
+    /* CJK font support */
+    :lang(ko) { font-family: 'Noto Sans KR', 'Montserrat', sans-serif; }
+    :lang(zh) { font-family: 'Noto Sans SC', 'Montserrat', sans-serif; }
+
+    /* NAV */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      padding: 22px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease;
+    }
+    #navbar.scrolled {
+      background: rgba(30, 30, 38, 0.96);
+      backdrop-filter: blur(16px);
+      padding: 14px 48px;
+      box-shadow: 0 1px 0 rgba(197, 161, 88, 0.12);
+    }
+    .nav-link {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10.5px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(247, 243, 236, 0.7); text-decoration: none;
+      position: relative;
+      transition: color 0.2s ease;
+    }
+    .nav-link::after {
+      content: ''; position: absolute;
+      bottom: -3px; left: 0; width: 0; height: 1px;
+      background: #C5A158;
+      transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .nav-link:hover { color: #F7F3EC; }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link:focus-visible { outline: 2px solid #C5A158; outline-offset: 4px; border-radius: 2px; }
+
+    /* LANGUAGE TOGGLE */
+    .lang-toggle {
+      display: flex; align-items: center;
+      border: 1px solid rgba(197, 161, 88, 0.32);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .lang-btn {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9.5px; font-weight: 600;
+      letter-spacing: 0.1em;
+      padding: 7px 11px;
+      background: transparent;
+      color: rgba(247, 243, 236, 0.5);
+      border: none;
+      border-right: 1px solid rgba(197, 161, 88, 0.2);
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .lang-btn:last-child { border-right: none; }
+    .lang-btn:hover { color: rgba(247, 243, 236, 0.85); background: rgba(197, 161, 88, 0.08); }
+    .lang-btn.active { background: #C5A158; color: #1E1E26; }
+    .lang-btn:focus-visible { outline: 2px solid #C5A158; outline-offset: 2px; }
+
+    /* BUTTONS */
+    .btn-gold {
+      display: inline-block; text-decoration: none;
+      font-family: 'Montserrat', 'Noto Sans KR', 'Noto Sans SC', sans-serif;
+      font-size: 10.5px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #1E1E26; background: #C5A158;
+      padding: 14px 34px; border: none; cursor: pointer;
+      transition: background 0.25s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+      box-shadow: 0 4px 18px rgba(197, 161, 88, 0.32);
+    }
+    .btn-gold:hover { background: #D4B878; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(197, 161, 88, 0.42); }
+    .btn-gold:active { transform: translateY(0); box-shadow: 0 2px 10px rgba(197, 161, 88, 0.25); }
+    .btn-gold:focus-visible { outline: 2px solid #C5A158; outline-offset: 3px; }
+
+    .btn-outline-light {
+      display: inline-block; text-decoration: none;
+      font-family: 'Montserrat', 'Noto Sans KR', 'Noto Sans SC', sans-serif;
+      font-size: 10.5px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(247, 243, 236, 0.85); background: transparent;
+      padding: 13px 34px;
+      border: 1px solid rgba(197, 161, 88, 0.5); cursor: pointer;
+      transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease;
+    }
+    .btn-outline-light:hover { border-color: #C5A158; background: rgba(197, 161, 88, 0.09); color: #F7F3EC; transform: translateY(-2px); }
+    .btn-outline-light:active { transform: translateY(0); }
+    .btn-outline-light:focus-visible { outline: 2px solid #C5A158; outline-offset: 3px; }
+
+    .btn-outline-dark {
+      display: inline-block; text-decoration: none;
+      font-family: 'Montserrat', 'Noto Sans KR', 'Noto Sans SC', sans-serif;
+      font-size: 10.5px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #1E1E26; background: transparent;
+      padding: 13px 34px;
+      border: 1px solid rgba(30, 30, 38, 0.28); cursor: pointer;
+      transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .btn-outline-dark:hover { border-color: #1E1E26; background: rgba(30, 30, 38, 0.05); transform: translateY(-2px); }
+    .btn-outline-dark:active { transform: translateY(0); }
+    .btn-outline-dark:focus-visible { outline: 2px solid #1E1E26; outline-offset: 3px; }
+
+    /* SERVICE CARDS */
+    .service-card {
+      background: #F7F3EC; padding: 48px 36px;
+      border-top: 2px solid #C5A158;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+    }
+    .service-card:hover { transform: translateY(-8px); box-shadow: 0 24px 48px rgba(30, 30, 38, 0.13), 0 8px 20px rgba(197, 161, 88, 0.08); }
+
+    /* GALLERY */
+    .gallery-item { position: relative; overflow: hidden; cursor: pointer; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+    .gallery-item:hover img { transform: scale(1.07); }
+    .gallery-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(30,30,38,0.78) 0%, rgba(30,30,38,0.1) 50%, transparent 100%);
+      display: flex; align-items: flex-end; padding: 24px 22px;
+      opacity: 0; transition: opacity 0.4s ease;
+    }
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+
+    /* TESTIMONIAL CARDS */
+    .testimonial-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(197,161,88,0.14); padding: 44px 36px;
+      transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    }
+    .testimonial-card:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,0.28); border-color: rgba(197,161,88,0.3); }
+
+    /* SCROLL ANIMATIONS */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.85s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.85s cubic-bezier(0.25,0.46,0.45,0.94); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @keyframes heroFadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
+    .hero-el { opacity: 0; animation: heroFadeUp 0.9s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
+    .hero-el.d1 { animation-delay: 0.2s; }
+    .hero-el.d2 { animation-delay: 0.4s; }
+    .hero-el.d3 { animation-delay: 0.6s; }
+    .hero-el.d4 { animation-delay: 0.8s; }
+    .hero-el.d5 { animation-delay: 1.0s; }
+
+    /* FOOTER LINKS */
+    .footer-link { font-family:'Montserrat','Noto Sans KR','Noto Sans SC',sans-serif; font-size:13px; font-weight:300; color:rgba(247,243,236,0.45); text-decoration:none; transition:color 0.2s ease; line-height:1; }
+    .footer-link:hover { color:rgba(247,243,236,0.85); }
+    .footer-link:focus-visible { outline:2px solid #C5A158; outline-offset:3px; border-radius:2px; }
+
+    .social-btn { width:38px; height:38px; border:1px solid rgba(197,161,88,0.22); display:flex; align-items:center; justify-content:center; color:rgba(247,243,236,0.45); text-decoration:none; transition:border-color 0.25s ease,color 0.25s ease,transform 0.2s ease; }
+    .social-btn:hover { border-color:#C5A158; color:#C5A158; transform:translateY(-2px); }
+    .social-btn:focus-visible { outline:2px solid #C5A158; outline-offset:3px; }
+
+    .ornament { display:flex; align-items:center; gap:14px; }
+    .ornament::before, .ornament::after { content:''; flex:1; height:1px; background:linear-gradient(to right,transparent,currentColor,transparent); opacity:0.35; }
+  </style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav id="navbar">
+  <a href="#" style="flex-shrink:0;">
+    <img src="brand_assets/Muse%20Hair%20Salon.png" alt="Muse Hair Salon" style="height:57px;width:auto;display:block;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.3));" />
+  </a>
+
+  <div style="display:flex;align-items:center;gap:40px;">
+    <a href="#services" class="nav-link" data-i18n="nav-services">Services</a>
+    <a href="#gallery"  class="nav-link" data-i18n="nav-gallery">Gallery</a>
+    <a href="#about"    class="nav-link" data-i18n="nav-about">About</a>
+    <a href="#team"     class="nav-link" data-i18n="nav-team">Team</a>
+    <a href="#testimonials" class="nav-link" data-i18n="nav-reviews">Reviews</a>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:14px;flex-shrink:0;">
+    <!-- Language Toggle -->
+    <div class="lang-toggle" id="langToggle">
+      <button class="lang-btn active" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="ko">한국어</button>
+      <button class="lang-btn" data-lang="zh">中文</button>
+    </div>
+    <a href="#book" class="btn-gold" data-i18n="nav-book-now">Book Now</a>
+  </div>
+</nav>
+
+
+<!-- HERO -->
+<section style="position:relative;min-height:100vh;background:#1E1E26;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 90% 70% at 15% 70%,rgba(197,161,88,0.07) 0%,transparent 55%),radial-gradient(ellipse 60% 60% at 85% 20%,rgba(201,136,128,0.055) 0%,transparent 50%),radial-gradient(ellipse 110% 100% at 50% 50%,rgba(46,46,58,0.85) 0%,#1E1E26 65%);pointer-events:none;"></div>
+  <div style="position:absolute;inset:0;pointer-events:none;opacity:0.045;mix-blend-mode:overlay;">
+    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#grain)"/></svg>
+  </div>
+  <div aria-hidden="true" style="position:absolute;right:-4%;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:clamp(280px,38vw,520px);font-weight:700;color:rgba(197,161,88,0.032);line-height:1;pointer-events:none;user-select:none;letter-spacing:-0.04em;">M</div>
+  <div aria-hidden="true" style="position:absolute;left:0;right:0;top:38%;height:1px;background:linear-gradient(to right,transparent 0%,rgba(197,161,88,0.08) 20%,rgba(197,161,88,0.08) 80%,transparent 100%);pointer-events:none;"></div>
+  <div aria-hidden="true" style="position:absolute;left:0;right:0;top:62%;height:1px;background:linear-gradient(to right,transparent 0%,rgba(197,161,88,0.08) 20%,rgba(197,161,88,0.08) 80%,transparent 100%);pointer-events:none;"></div>
+
+  <div style="position:relative;z-index:2;text-align:center;padding:130px 24px 100px;max-width:960px;margin:0 auto;">
+    <div class="hero-el d1" style="display:inline-flex;align-items:center;gap:14px;margin-bottom:36px;">
+      <span style="display:block;width:36px;height:1px;background:#C5A158;opacity:0.7;"></span>
+      <span style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.32em;text-transform:uppercase;color:#C5A158;" data-i18n="hero-label">Est. 2015 &nbsp;·&nbsp; Luxury Hair Studio</span>
+      <span style="display:block;width:36px;height:1px;background:#C5A158;opacity:0.7;"></span>
+    </div>
+
+    <h1 class="hero-el d2" style="font-family:'Playfair Display',serif;font-size:clamp(56px,8.5vw,112px);font-weight:600;letter-spacing:-0.035em;line-height:0.93;color:#F7F3EC;margin-bottom:32px;" data-i18n-html="hero-headline">
+      Where Beauty<br/><em style="font-style:italic;color:#C5A158;">Becomes Art</em>
+    </h1>
+
+    <p class="hero-el d3" style="font-family:'Montserrat',sans-serif;font-size:15.5px;font-weight:300;line-height:1.78;color:rgba(247,243,236,0.58);max-width:500px;margin:0 auto 52px;letter-spacing:0.01em;" data-i18n="hero-subtitle">
+      A haven of style and sophistication. We craft personalized looks that celebrate your individuality and leave you feeling radiant.
+    </p>
+
+    <div class="hero-el d4" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <a href="#book" class="btn-gold" data-i18n="hero-cta1">Book an Appointment</a>
+      <a href="#services" class="btn-outline-light" data-i18n="hero-cta2">Explore Services</a>
+    </div>
+
+    <div class="hero-el d5" style="margin-top:80px;display:inline-flex;flex-direction:column;align-items:center;gap:10px;">
+      <span style="font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:rgba(197,161,88,0.55);" data-i18n="hero-scroll">Scroll</span>
+      <div style="width:1px;height:44px;background:linear-gradient(to bottom,rgba(197,161,88,0.55),transparent);"></div>
+    </div>
+  </div>
+
+  <div style="position:absolute;bottom:0;left:0;right:0;pointer-events:none;">
+    <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;vertical-align:bottom;">
+      <path d="M0 80L1440 80L1440 32C1200 72 960 8 720 38C480 68 240 8 0 32L0 80Z" fill="#F7F3EC"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- FOUNDER QUOTE -->
+<section style="background:#F7F3EC;padding:72px 40px;text-align:center;">
+  <div class="reveal" style="max-width:680px;margin:0 auto;">
+    <p style="font-family:'Playfair Display',serif;font-size:clamp(19px,2.4vw,27px);font-weight:400;font-style:italic;line-height:1.65;color:#1E1E26;margin-bottom:28px;" data-i18n="quote-text">
+      "Every client who sits in our chair is our muse — and every appointment is a chance to reveal the most radiant version of themselves."
+    </p>
+    <div class="ornament" style="color:#C5A158;max-width:320px;margin:0 auto;">
+      <span style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#C5A158;white-space:nowrap;" data-i18n="quote-author">Isabelle Laurent, Founder</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- SERVICES -->
+<section id="services" style="background:#EDE8DF;padding:108px 48px;">
+  <div style="max-width:1240px;margin:0 auto;">
+    <div class="reveal" style="text-align:center;margin-bottom:80px;">
+      <span style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.32em;text-transform:uppercase;color:#C5A158;display:block;margin-bottom:18px;" data-i18n="services-label">What We Offer</span>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(38px,4.2vw,58px);font-weight:600;letter-spacing:-0.025em;color:#1E1E26;margin-bottom:20px;" data-i18n="services-title">Our Signature Services</h2>
+      <p style="font-family:'Montserrat',sans-serif;font-size:14.5px;font-weight:300;line-height:1.78;color:rgba(30,30,38,0.58);max-width:440px;margin:0 auto;" data-i18n="services-subtitle">From precision cuts to transformative color — every service is tailored to you.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:28px;">
+      <div class="service-card reveal">
+        <div style="width:54px;height:54px;background:linear-gradient(135deg,#C5A158,#D4B878);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:30px;flex-shrink:0;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1E1E26" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 0 12 0A6 6 0 0 0 6 9z"/><path d="M12 15v7"/><path d="M9 22h6"/></svg>
+        </div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:#1E1E26;margin-bottom:14px;" data-i18n="s1-title">Cuts &amp; Styling</h3>
+        <p style="font-family:'Montserrat',sans-serif;font-size:13.5px;font-weight:300;line-height:1.8;color:rgba(30,30,38,0.62);margin-bottom:26px;" data-i18n="s1-desc">Precision haircuts crafted to flatter your features — from classic bobs to modern layers and everything in between.</p>
+        <span style="font-family:'Montserrat',sans-serif;font-size:10.5px;font-weight:600;color:#C5A158;letter-spacing:0.1em;text-transform:uppercase;" data-i18n="s1-price">From $85</span>
+      </div>
+
+      <div class="service-card reveal">
+        <div style="width:54px;height:54px;background:linear-gradient(135deg,#C5A158,#D4B878);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:30px;flex-shrink:0;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1E1E26" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M17.5 10.5c1.5 2 1.5 5-1 7s-5.5 2-7.5.5"/><path d="M5.5 18c-1-2.5 0-6 3-8"/><path d="M8 7c0 0 1-3 5-3"/></svg>
+        </div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:#1E1E26;margin-bottom:14px;" data-i18n="s2-title">Color &amp; Highlights</h3>
+        <p style="font-family:'Montserrat',sans-serif;font-size:13.5px;font-weight:300;line-height:1.8;color:rgba(30,30,38,0.62);margin-bottom:26px;" data-i18n="s2-desc">Dimensional balayage, rich single-process color, and lived-in highlights — blended to perfection by our master colorists.</p>
+        <span style="font-family:'Montserrat',sans-serif;font-size:10.5px;font-weight:600;color:#C5A158;letter-spacing:0.1em;text-transform:uppercase;" data-i18n="s2-price">From $120</span>
+      </div>
+
+      <div class="service-card reveal">
+        <div style="width:54px;height:54px;background:linear-gradient(135deg,#C5A158,#D4B878);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:30px;flex-shrink:0;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1E1E26" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:#1E1E26;margin-bottom:14px;" data-i18n="s3-title">Treatments &amp; Care</h3>
+        <p style="font-family:'Montserrat',sans-serif;font-size:13.5px;font-weight:300;line-height:1.8;color:rgba(30,30,38,0.62);margin-bottom:26px;" data-i18n="s3-desc">Restorative keratin treatments, deep conditioning rituals, and scalp therapies designed to rebuild shine and long-term vitality.</p>
+        <span style="font-family:'Montserrat',sans-serif;font-size:10.5px;font-weight:600;color:#C5A158;letter-spacing:0.1em;text-transform:uppercase;" data-i18n="s3-price">From $95</span>
+      </div>
+
+      <div class="service-card reveal">
+        <div style="width:54px;height:54px;background:linear-gradient(135deg,#C5A158,#D4B878);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:30px;flex-shrink:0;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1E1E26" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:#1E1E26;margin-bottom:14px;" data-i18n="s4-title">Extensions &amp; Volume</h3>
+        <p style="font-family:'Montserrat',sans-serif;font-size:13.5px;font-weight:300;line-height:1.8;color:rgba(30,30,38,0.62);margin-bottom:26px;" data-i18n="s4-desc">Seamless tape-ins, hand-tied wefts, and fusion extensions for breathtaking length, volume, and absolute luxury.</p>
+        <span style="font-family:'Montserrat',sans-serif;font-size:10.5px;font-weight:600;color:#C5A158;letter-spacing:0.1em;text-transform:uppercase;" data-i18n="s4-price">From $250</span>
+      </div>
+    </div>
+
+    <div class="reveal" style="text-align:center;margin-top:56px;">
+      <a href="#book" class="btn-gold" data-i18n="services-cta">View Full Service Menu</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ABOUT -->
+<section id="about" style="background:#1E1E26;padding:110px 48px;position:relative;overflow:hidden;">
+  <div aria-hidden="true" style="position:absolute;top:0;right:0;width:55%;height:100%;background:radial-gradient(ellipse 80% 80% at 85% 50%,rgba(197,161,88,0.055) 0%,transparent 65%);pointer-events:none;"></div>
+  <div style="max-width:1240px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:88px;align-items:center;">
+
+    <div class="reveal" style="position:relative;">
+      <div style="position:relative;overflow:hidden;">
+        <img src="https://placehold.co/600x740/2C2C3A/C5A158?text=" alt="Inside Muse Hair Salon" style="width:100%;display:block;object-fit:cover;" />
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(30,30,38,0.55) 0%,rgba(30,30,38,0.1) 50%,transparent 100%);mix-blend-mode:multiply;"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(197,161,88,0.06),transparent 60%);"></div>
+      </div>
+      <div style="position:absolute;bottom:-32px;right:-32px;background:#C5A158;padding:34px 40px;z-index:10;box-shadow:0 16px 40px rgba(0,0,0,0.25);">
+        <div style="font-family:'Playfair Display',serif;font-size:52px;font-weight:700;color:#1E1E26;line-height:1;">10+</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#1E1E26;opacity:0.75;margin-top:6px;" data-i18n="about-years">Years of Excellence</div>
+      </div>
+    </div>
+
+    <div class="reveal" style="padding-left:12px;">
+      <span style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.32em;text-transform:uppercase;color:#C5A158;display:block;margin-bottom:22px;" data-i18n="about-label">Our Story</span>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(38px,3.8vw,54px);font-weight:600;letter-spacing:-0.025em;line-height:1.08;color:#F7F3EC;margin-bottom:30px;" data-i18n-html="about-headline">
+        The Muse<br/><em style="font-style:italic;color:#C5A158;">Experience</em>
+      </h2>
+      <div style="width:48px;height:1px;background:#C5A158;margin-bottom:34px;opacity:0.75;"></div>
+      <p style="font-family:'Montserrat',sans-serif;font-size:14.5px;font-weight:300;line-height:1.88;color:rgba(247,243,236,0.6);margin-bottom:22px;" data-i18n="about-p1">
+        Born from a passion for beauty and a reverence for craft, Muse Hair Salon was founded on one simple belief — that every person deserves to feel extraordinary.
+      </p>
+      <p style="font-family:'Montserrat',sans-serif;font-size:14.5px;font-weight:300;line-height:1.88;color:rgba(247,243,236,0.6);margin-bottom:44px;" data-i18n="about-p2">
+        Our award-winning stylists bring decades of combined expertise to every appointment, blending artistry with precision. From the moment you walk through our doors to the final reveal, every detail is designed to make you feel seen, celebrated, and transformed.
+      </p>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:32px 0;border-top:1px solid rgba(197,161,88,0.18);border-bottom:1px solid rgba(197,161,88,0.18);margin-bottom:44px;">
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:#C5A158;line-height:1;">5k+</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,243,236,0.4);margin-top:7px;" data-i18n="about-stat1">Happy Clients</div>
+        </div>
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:#C5A158;line-height:1;">12</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,243,236,0.4);margin-top:7px;" data-i18n="about-stat2">Expert Stylists</div>
+        </div>
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:#C5A158;line-height:1;">4.9★</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,243,236,0.4);margin-top:7px;" data-i18n="about-stat3">Average Rating</div>
+        </div>
+      </div>
+
+      <a href="#team" class="btn-gold" data-i18n="about-cta">Meet the Team</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- GALLERY -->
+<section id="gallery" style="background:#F7F3EC;padding:108px 48px;">
+  <div style="max-width:1240px;margin:0 auto;">
+    <div class="reveal" style="text-align:center;margin-bottom:68px;">
+      <span style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.32em;text-transform:uppercase;color:#C5A158;display:block;margin-bottom:18px;" data-i18n="gallery-label">Our Work</span>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(38px,4.2vw,56px);font-weight:600;letter-spacing:-0.025em;color:#1E1E26;margin-bottom:18px;" data-i18n="gallery-title">Styled by Muse</h2>
+      <p style="font-family:'Montserrat',sans-serif;font-size:14.5px;font-weight:300;line-height:1.75;color:rgba(30,30,38,0.52);max-width:380px;margin:0 auto;" data-i18n="gallery-subtitle">A curated look at the transformations we create every day.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:300px 300px 300px;gap:14px;">
+      <div class="gallery-item reveal" style="grid-row:span 2;">
+        <img src="https://placehold.co/480x620/B8A070/F7F3EC?text=" alt="Balayage" />
+        <div class="gallery-overlay"><span style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:#F7F3EC;" data-i18n="g1-label">Balayage Transformation</span></div>
+      </div>
+      <div class="gallery-item reveal">
+        <img src="https://placehold.co/480x300/D4B878/1E1E26?text=" alt="Bob" />
+        <div class="gallery-overlay"><span style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:#F7F3EC;" data-i18n="g2-label">Precision Bob</span></div>
+      </div>
+      <div class="gallery-item reveal">
+        <img src="https://placehold.co/480x300/C9887D/F7F3EC?text=" alt="Color" />
+        <div class="gallery-overlay"><span style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:#F7F3EC;" data-i18n="g3-label">Lived-In Color</span></div>
+      </div>
+      <div class="gallery-item reveal">
+        <img src="https://placehold.co/480x300/2A2830/C5A158?text=" alt="Extensions" />
+        <div class="gallery-overlay"><span style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:#F7F3EC;" data-i18n="g4-label">Silk Extensions</span></div>
+      </div>
+      <div class="gallery-item reveal">
+        <img src="https://placehold.co/480x300/EDE8DF/A8895A?text=" alt="Bridal" />
+        <div class="gallery-overlay"><span style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:#1E1E26;" data-i18n="g5-label">Bridal Updo</span></div>
+      </div>
+      <div class="gallery-item reveal" style="grid-row:span 2;">
+        <img src="https://placehold.co/480x620/A8895A/F7F3EC?text=" alt="Gloss" />
+        <div class="gallery-overlay"><span style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:#F7F3EC;" data-i18n="g6-label">Glossing Treatment</span></div>
+      </div>
+      <div class="gallery-item reveal">
+        <img src="https://placehold.co/480x300/C5A158/1E1E26?text=" alt="Waves" />
+        <div class="gallery-overlay"><span style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:#1E1E26;" data-i18n="g7-label">Volume Waves</span></div>
+      </div>
+      <div class="gallery-item reveal">
+        <img src="https://placehold.co/480x300/2E2E3A/D4B878?text=" alt="Brunette" />
+        <div class="gallery-overlay"><span style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:#F7F3EC;" data-i18n="g8-label">Rich Brunette</span></div>
+      </div>
+    </div>
+
+    <div class="reveal" style="text-align:center;margin-top:52px;">
+      <a href="#" class="btn-gold" data-i18n="gallery-cta">View Full Gallery</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- TEAM -->
+<section id="team" style="background:#EDE8DF;padding:108px 48px;">
+  <div style="max-width:1240px;margin:0 auto;">
+    <div class="reveal" style="text-align:center;margin-bottom:76px;">
+      <span style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.32em;text-transform:uppercase;color:#C5A158;display:block;margin-bottom:18px;" data-i18n="team-label">The Artists</span>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(38px,4.2vw,56px);font-weight:600;letter-spacing:-0.025em;color:#1E1E26;margin-bottom:18px;" data-i18n="team-title">Meet Your Stylists</h2>
+      <p style="font-family:'Montserrat',sans-serif;font-size:14.5px;font-weight:300;line-height:1.78;color:rgba(30,30,38,0.55);max-width:440px;margin:0 auto;" data-i18n="team-subtitle">Each member of our team is a specialist — passionate, trained, and dedicated to your vision.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:32px;">
+      <div class="reveal" style="text-align:center;">
+        <div style="position:relative;overflow:hidden;margin-bottom:24px;">
+          <img src="https://placehold.co/400x480/C9A55A/1E1E26?text=" alt="Isabelle Laurent" style="width:100%;display:block;object-fit:cover;" />
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(30,30,38,0.4) 0%,transparent 55%);"></div>
+        </div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:#1E1E26;margin-bottom:6px;">Isabelle Laurent</h3>
+        <span style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#C5A158;display:block;margin-bottom:12px;" data-i18n="stylist1-role">Founder &amp; Creative Director</span>
+        <p style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;line-height:1.75;color:rgba(30,30,38,0.6);" data-i18n="stylist1-bio">15 years of mastery in color and creative direction. Trained in Paris and New York.</p>
+      </div>
+      <div class="reveal" style="text-align:center;">
+        <div style="position:relative;overflow:hidden;margin-bottom:24px;">
+          <img src="https://placehold.co/400x480/D4A098/1E1E26?text=" alt="Marcus Chen" style="width:100%;display:block;object-fit:cover;" />
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(30,30,38,0.4) 0%,transparent 55%);"></div>
+        </div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:#1E1E26;margin-bottom:6px;">Marcus Chen</h3>
+        <span style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#C5A158;display:block;margin-bottom:12px;" data-i18n="stylist2-role">Senior Colorist</span>
+        <p style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;line-height:1.75;color:rgba(30,30,38,0.6);" data-i18n="stylist2-bio">A master of balayage and dimensional color, Marcus creates looks that turn heads everywhere.</p>
+      </div>
+      <div class="reveal" style="text-align:center;">
+        <div style="position:relative;overflow:hidden;margin-bottom:24px;">
+          <img src="https://placehold.co/400x480/2E2E3A/C5A158?text=" alt="Sofia Reyes" style="width:100%;display:block;object-fit:cover;" />
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(30,30,38,0.4) 0%,transparent 55%);"></div>
+        </div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:#1E1E26;margin-bottom:6px;">Sofia Reyes</h3>
+        <span style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#C5A158;display:block;margin-bottom:12px;" data-i18n="stylist3-role">Precision Cut Specialist</span>
+        <p style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;line-height:1.75;color:rgba(30,30,38,0.6);" data-i18n="stylist3-bio">Known for her razor-sharp bobs and transformative cuts, Sofia brings sculptural precision to every chair.</p>
+      </div>
+      <div class="reveal" style="text-align:center;">
+        <div style="position:relative;overflow:hidden;margin-bottom:24px;">
+          <img src="https://placehold.co/400x480/A8895A/F7F3EC?text=" alt="Naomi Okafor" style="width:100%;display:block;object-fit:cover;" />
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(30,30,38,0.4) 0%,transparent 55%);"></div>
+        </div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:#1E1E26;margin-bottom:6px;">Naomi Okafor</h3>
+        <span style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#C5A158;display:block;margin-bottom:12px;" data-i18n="stylist4-role">Extensions &amp; Texture Expert</span>
+        <p style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;line-height:1.75;color:rgba(30,30,38,0.6);" data-i18n="stylist4-bio">Specializing in seamless extensions and texture work, Naomi creates volume that looks completely natural.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" style="background:#1E1E26;padding:108px 48px;position:relative;overflow:hidden;">
+  <div aria-hidden="true" style="position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-family:'Playfair Display',serif;font-size:clamp(180px,28vw,380px);font-weight:700;color:rgba(197,161,88,0.03);line-height:1;pointer-events:none;user-select:none;">&ldquo;</div>
+  <div style="max-width:1100px;margin:0 auto;position:relative;">
+    <div class="reveal" style="text-align:center;margin-bottom:76px;">
+      <span style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.32em;text-transform:uppercase;color:#C5A158;display:block;margin-bottom:18px;" data-i18n="testimonials-label">Kind Words</span>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(38px,4.2vw,54px);font-weight:600;letter-spacing:-0.025em;color:#F7F3EC;" data-i18n="testimonials-title">What Our Clients Say</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;">
+      <div class="testimonial-card reveal">
+        <div style="display:flex;gap:2px;margin-bottom:26px;"><span style="color:#C5A158;font-size:15px;">★★★★★</span></div>
+        <p style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;line-height:1.72;color:rgba(247,243,236,0.82);margin-bottom:30px;" data-i18n="review1-text">"I've been to many salons, but Muse is something else entirely. My balayage looked like it belonged in a magazine. I won't go anywhere else."</p>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#C5A158,#D4B878);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:600;color:#1E1E26;font-size:17px;flex-shrink:0;">S</div>
+          <div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;color:#F7F3EC;">Sophia M.</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:10.5px;color:rgba(197,161,88,0.55);margin-top:3px;" data-i18n="review1-since">Loyal Client Since 2019</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div style="display:flex;gap:2px;margin-bottom:26px;"><span style="color:#C5A158;font-size:15px;">★★★★★</span></div>
+        <p style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;line-height:1.72;color:rgba(247,243,236,0.82);margin-bottom:30px;" data-i18n="review2-text">"The atmosphere alone is worth the visit. My stylist listened to every detail and delivered beyond what I imagined. Absolutely transformative."</p>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#C9887D,#D4A098);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:600;color:#1E1E26;font-size:17px;flex-shrink:0;">A</div>
+          <div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;color:#F7F3EC;">Amara J.</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:10.5px;color:rgba(197,161,88,0.55);margin-top:3px;" data-i18n="review2-since">Color &amp; Cut Client</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div style="display:flex;gap:2px;margin-bottom:26px;"><span style="color:#C5A158;font-size:15px;">★★★★★</span></div>
+        <p style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;line-height:1.72;color:rgba(247,243,236,0.82);margin-bottom:30px;" data-i18n="review3-text">"I trusted Muse with my hair for my wedding day, and they delivered a look that made me cry happy tears. Absolutely unforgettable."</p>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#A8895A,#C5A158);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:600;color:#F7F3EC;font-size:17px;flex-shrink:0;">C</div>
+          <div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;color:#F7F3EC;">Celeste R.</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:10.5px;color:rgba(197,161,88,0.55);margin-top:3px;" data-i18n="review3-since">Bridal Client, 2025</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- BOOK CTA -->
+<section id="book" style="background:#EDE8DF;padding:112px 48px;text-align:center;position:relative;overflow:hidden;">
+  <div aria-hidden="true" style="position:absolute;inset:0;background:radial-gradient(ellipse 65% 85% at 50% 50%,rgba(197,161,88,0.09) 0%,transparent 65%);pointer-events:none;"></div>
+  <div class="reveal" style="max-width:680px;margin:0 auto;position:relative;">
+    <img src="brand_assets/Muse%20Hair%20Salon.png" alt="Muse Hair Salon" style="height:76px;width:auto;margin:0 auto 40px;display:block;opacity:0.88;" />
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(38px,5vw,64px);font-weight:600;letter-spacing:-0.03em;line-height:1.08;color:#1E1E26;margin-bottom:22px;" data-i18n-html="book-headline">
+      Ready for Your<br/><em style="font-style:italic;color:#C5A158;">Transformation?</em>
+    </h2>
+    <p style="font-family:'Montserrat',sans-serif;font-size:15px;font-weight:300;line-height:1.78;color:rgba(30,30,38,0.58);max-width:440px;margin:0 auto 48px;" data-i18n="book-subtitle">
+      Reserve your appointment today and step into the version of yourself you've always envisioned. New and returning clients welcome.
+    </p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:64px;">
+      <a href="tel:+15551234567" class="btn-gold" data-i18n="book-cta1">Call to Book</a>
+      <a href="#" class="btn-outline-dark" data-i18n="book-cta2">Book Online</a>
+    </div>
+    <div style="display:flex;justify-content:center;gap:0;flex-wrap:wrap;border-top:1px solid rgba(197,161,88,0.22);padding-top:48px;">
+      <div style="padding:0 40px;text-align:center;border-right:1px solid rgba(197,161,88,0.22);">
+        <div style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#C5A158;margin-bottom:12px;" data-i18n="book-hours-label">Hours</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;color:rgba(30,30,38,0.65);line-height:1.85;" data-i18n-html="book-hours">Tue – Fri: 9am – 7pm<br/>Sat: 9am – 5pm<br/>Sun – Mon: Closed</div>
+      </div>
+      <div style="padding:0 40px;text-align:center;border-right:1px solid rgba(197,161,88,0.22);">
+        <div style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#C5A158;margin-bottom:12px;" data-i18n="book-location-label">Location</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;color:rgba(30,30,38,0.65);line-height:1.85;">142 Blossom Street<br/>Suite 301<br/>New York, NY 10001</div>
+      </div>
+      <div style="padding:0 40px;text-align:center;">
+        <div style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#C5A158;margin-bottom:12px;" data-i18n="book-contact-label">Contact</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;color:rgba(30,30,38,0.65);line-height:1.85;">(555) 123-4567<br/>hello@musehairsalon.com<br/>@musehairsalon</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer id="contact" style="background:#1E1E26;padding:72px 48px 40px;border-top:1px solid rgba(197,161,88,0.12);">
+  <div style="max-width:1240px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:56px;margin-bottom:64px;">
+      <div>
+        <img src="brand_assets/Muse%20Hair%20Salon.png" alt="Muse Hair Salon" style="height:58px;width:auto;margin-bottom:22px;display:block;opacity:0.92;" />
+        <p style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;line-height:1.78;color:rgba(247,243,236,0.4);margin-bottom:28px;max-width:230px;" data-i18n="footer-tagline">
+          A luxury hair studio dedicated to craft, connection, and celebrating your unique beauty.
+        </p>
+        <div style="display:flex;gap:12px;">
+          <a href="#" class="social-btn" aria-label="Instagram">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="TikTok">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.73a8.27 8.27 0 004.84 1.55V6.84a4.85 4.85 0 01-1.07-.15z"/></svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="Facebook">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#C5A158;margin-bottom:22px;" data-i18n="footer-col-services">Services</h4>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:13px;">
+          <li><a href="#" class="footer-link" data-i18n="footer-s1">Cuts &amp; Styling</a></li>
+          <li><a href="#" class="footer-link" data-i18n="footer-s2">Color &amp; Highlights</a></li>
+          <li><a href="#" class="footer-link" data-i18n="footer-s3">Treatments</a></li>
+          <li><a href="#" class="footer-link" data-i18n="footer-s4">Extensions</a></li>
+          <li><a href="#" class="footer-link" data-i18n="footer-s5">Bridal</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#C5A158;margin-bottom:22px;" data-i18n="footer-col-studio">Studio</h4>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:13px;">
+          <li><a href="#about" class="footer-link" data-i18n="footer-st1">About Us</a></li>
+          <li><a href="#team"  class="footer-link" data-i18n="footer-st2">Our Team</a></li>
+          <li><a href="#gallery" class="footer-link" data-i18n="footer-st3">Gallery</a></li>
+          <li><a href="#" class="footer-link" data-i18n="footer-st4">Gift Cards</a></li>
+          <li><a href="#" class="footer-link" data-i18n="footer-st5">Careers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#C5A158;margin-bottom:22px;" data-i18n="footer-col-contact">Contact</h4>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:13px;">
+          <li style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;color:rgba(247,243,236,0.4);line-height:1.7;">142 Blossom St, Suite 301<br/>New York, NY 10001</li>
+          <li><a href="tel:+15551234567" class="footer-link">(555) 123-4567</a></li>
+          <li><a href="mailto:hello@musehairsalon.com" class="footer-link">hello@musehairsalon.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(197,161,88,0.1);padding-top:28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+      <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:rgba(247,243,236,0.22);" data-i18n="footer-copyright">© 2026 Muse Hair Salon. All rights reserved.</span>
+      <div style="display:flex;gap:24px;">
+        <a href="#" style="font-family:'Montserrat',sans-serif;font-size:11px;color:rgba(247,243,236,0.22);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='rgba(247,243,236,0.5)'" onmouseout="this.style.color='rgba(247,243,236,0.22)'" data-i18n="footer-privacy">Privacy Policy</a>
+        <a href="#" style="font-family:'Montserrat',sans-serif;font-size:11px;color:rgba(247,243,236,0.22);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='rgba(247,243,236,0.5)'" onmouseout="this.style.color='rgba(247,243,236,0.22)'" data-i18n="footer-terms">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+// ─── TRANSLATIONS ───────────────────────────────────────────────────────────
+const translations = {
+  en: {
+    'nav-services': 'Services',
+    'nav-gallery': 'Gallery',
+    'nav-about': 'About',
+    'nav-team': 'Team',
+    'nav-reviews': 'Reviews',
+    'nav-book-now': 'Book Now',
+    'hero-label': 'Est. 2015 &nbsp;·&nbsp; Luxury Hair Studio',
+    'hero-headline': 'Where Beauty<br/><em style="font-style:italic;color:#C5A158;">Becomes Art</em>',
+    'hero-subtitle': 'A haven of style and sophistication. We craft personalized looks that celebrate your individuality and leave you feeling radiant.',
+    'hero-cta1': 'Book an Appointment',
+    'hero-cta2': 'Explore Services',
+    'hero-scroll': 'Scroll',
+    'quote-text': '"Every client who sits in our chair is our muse — and every appointment is a chance to reveal the most radiant version of themselves."',
+    'quote-author': 'Isabelle Laurent, Founder',
+    'services-label': 'What We Offer',
+    'services-title': 'Our Signature Services',
+    'services-subtitle': 'From precision cuts to transformative color — every service is tailored to you.',
+    's1-title': 'Cuts &amp; Styling',
+    's1-desc': 'Precision haircuts crafted to flatter your features — from classic bobs to modern layers and everything in between.',
+    's1-price': 'From $85',
+    's2-title': 'Color &amp; Highlights',
+    's2-desc': 'Dimensional balayage, rich single-process color, and lived-in highlights — blended to perfection by our master colorists.',
+    's2-price': 'From $120',
+    's3-title': 'Treatments &amp; Care',
+    's3-desc': 'Restorative keratin treatments, deep conditioning rituals, and scalp therapies designed to rebuild shine and long-term vitality.',
+    's3-price': 'From $95',
+    's4-title': 'Extensions &amp; Volume',
+    's4-desc': 'Seamless tape-ins, hand-tied wefts, and fusion extensions for breathtaking length, volume, and absolute luxury.',
+    's4-price': 'From $250',
+    'services-cta': 'View Full Service Menu',
+    'about-label': 'Our Story',
+    'about-headline': 'The Muse<br/><em style="font-style:italic;color:#C5A158;">Experience</em>',
+    'about-p1': 'Born from a passion for beauty and a reverence for craft, Muse Hair Salon was founded on one simple belief — that every person deserves to feel extraordinary.',
+    'about-p2': 'Our award-winning stylists bring decades of combined expertise to every appointment, blending artistry with precision. From the moment you walk through our doors to the final reveal, every detail is designed to make you feel seen, celebrated, and transformed.',
+    'about-stat1': 'Happy Clients',
+    'about-stat2': 'Expert Stylists',
+    'about-stat3': 'Average Rating',
+    'about-cta': 'Meet the Team',
+    'about-years': 'Years of Excellence',
+    'gallery-label': 'Our Work',
+    'gallery-title': 'Styled by Muse',
+    'gallery-subtitle': 'A curated look at the transformations we create every day.',
+    'g1-label': 'Balayage Transformation',
+    'g2-label': 'Precision Bob',
+    'g3-label': 'Lived-In Color',
+    'g4-label': 'Silk Extensions',
+    'g5-label': 'Bridal Updo',
+    'g6-label': 'Glossing Treatment',
+    'g7-label': 'Volume Waves',
+    'g8-label': 'Rich Brunette',
+    'gallery-cta': 'View Full Gallery',
+    'team-label': 'The Artists',
+    'team-title': 'Meet Your Stylists',
+    'team-subtitle': 'Each member of our team is a specialist — passionate, trained, and dedicated to your vision.',
+    'stylist1-role': 'Founder &amp; Creative Director',
+    'stylist1-bio': '15 years of mastery in color and creative direction. Trained in Paris and New York.',
+    'stylist2-role': 'Senior Colorist',
+    'stylist2-bio': 'A master of balayage and dimensional color, Marcus creates looks that turn heads everywhere.',
+    'stylist3-role': 'Precision Cut Specialist',
+    'stylist3-bio': 'Known for her razor-sharp bobs and transformative cuts, Sofia brings sculptural precision to every chair.',
+    'stylist4-role': 'Extensions &amp; Texture Expert',
+    'stylist4-bio': 'Specializing in seamless extensions and texture work, Naomi creates volume that looks completely natural.',
+    'testimonials-label': 'Kind Words',
+    'testimonials-title': 'What Our Clients Say',
+    'review1-text': '"I\'ve been to many salons, but Muse is something else entirely. My balayage looked like it belonged in a magazine. I won\'t go anywhere else."',
+    'review1-since': 'Loyal Client Since 2019',
+    'review2-text': '"The atmosphere alone is worth the visit. My stylist listened to every detail and delivered beyond what I imagined. Absolutely transformative."',
+    'review2-since': 'Color &amp; Cut Client',
+    'review3-text': '"I trusted Muse with my hair for my wedding day, and they delivered a look that made me cry happy tears. Absolutely unforgettable."',
+    'review3-since': 'Bridal Client, 2025',
+    'book-headline': 'Ready for Your<br/><em style="font-style:italic;color:#C5A158;">Transformation?</em>',
+    'book-subtitle': 'Reserve your appointment today and step into the version of yourself you\'ve always envisioned. New and returning clients welcome.',
+    'book-cta1': 'Call to Book',
+    'book-cta2': 'Book Online',
+    'book-hours-label': 'Hours',
+    'book-hours': 'Tue – Fri: 9am – 7pm<br/>Sat: 9am – 5pm<br/>Sun – Mon: Closed',
+    'book-location-label': 'Location',
+    'book-contact-label': 'Contact',
+    'footer-tagline': 'A luxury hair studio dedicated to craft, connection, and celebrating your unique beauty.',
+    'footer-col-services': 'Services',
+    'footer-col-studio': 'Studio',
+    'footer-col-contact': 'Contact',
+    'footer-s1': 'Cuts &amp; Styling',
+    'footer-s2': 'Color &amp; Highlights',
+    'footer-s3': 'Treatments',
+    'footer-s4': 'Extensions',
+    'footer-s5': 'Bridal',
+    'footer-st1': 'About Us',
+    'footer-st2': 'Our Team',
+    'footer-st3': 'Gallery',
+    'footer-st4': 'Gift Cards',
+    'footer-st5': 'Careers',
+    'footer-copyright': '© 2026 Muse Hair Salon. All rights reserved.',
+    'footer-privacy': 'Privacy Policy',
+    'footer-terms': 'Terms of Service',
+  },
+
+  ko: {
+    'nav-services': '서비스',
+    'nav-gallery': '갤러리',
+    'nav-about': '소개',
+    'nav-team': '팀',
+    'nav-reviews': '리뷰',
+    'nav-book-now': '예약하기',
+    'hero-label': '설립 2015 &nbsp;·&nbsp; 럭셔리 헤어 살롱',
+    'hero-headline': '아름다움이<br/><em style="font-style:italic;color:#C5A158;">예술이 되는 곳</em>',
+    'hero-subtitle': '스타일과 세련미의 안식처. 당신의 개성을 빛내고 언제나 빛나는 모습으로 만들어 드립니다.',
+    'hero-cta1': '예약하기',
+    'hero-cta2': '서비스 보기',
+    'hero-scroll': '스크롤',
+    'quote-text': '"저희 의자에 앉는 모든 고객이 저희의 뮤즈입니다 — 모든 예약은 가장 빛나는 자신을 드러낼 기회입니다."',
+    'quote-author': 'Isabelle Laurent, 창업자',
+    'services-label': '제공 서비스',
+    'services-title': '시그니처 서비스',
+    'services-subtitle': '정밀한 컷부터 변신 컬러까지 — 모든 서비스는 당신에게 맞춤화됩니다.',
+    's1-title': '컷 &amp; 스타일링',
+    's1-desc': '얼굴형을 돋보이게 하는 정밀 헤어컷 — 클래식 보브부터 모던 레이어까지 다양합니다.',
+    's1-price': '85달러부터',
+    's2-title': '컬러 &amp; 하이라이트',
+    's2-desc': '입체적인 발레아주, 풍부한 단일 컬러, 자연스러운 하이라이트 — 마스터 컬러리스트가 완성합니다.',
+    's2-price': '120달러부터',
+    's3-title': '트리트먼트 &amp; 케어',
+    's3-desc': '회복력 있는 케라틴 트리트먼트, 딥 컨디셔닝 리추얼, 두피 테라피로 광택과 생기를 되찾으세요.',
+    's3-price': '95달러부터',
+    's4-title': '익스텐션 &amp; 볼륨',
+    's4-desc': '매끄러운 테이프인, 핸드타이드 웨프트, 퓨전 익스텐션으로 풍성한 길이와 볼륨을 경험하세요.',
+    's4-price': '250달러부터',
+    'services-cta': '전체 서비스 메뉴 보기',
+    'about-label': '우리의 이야기',
+    'about-headline': '뮤즈<br/><em style="font-style:italic;color:#C5A158;">경험</em>',
+    'about-p1': '아름다움에 대한 열정과 기술에 대한 경외심에서 탄생한 뮤즈 헤어 살롱은 하나의 믿음으로 설립되었습니다 — 모든 사람은 특별함을 느낄 자격이 있다는 것.',
+    'about-p2': '수상 경력의 스타일리스트들이 수십 년의 경험을 담아 예술성과 정밀함을 완벽하게 조화시킵니다. 문을 열고 들어온 순간부터 최종 연출까지, 당신이 보살핌받고 변신하는 느낌을 드리도록 설계되었습니다.',
+    'about-stat1': '만족한 고객',
+    'about-stat2': '전문 스타일리스트',
+    'about-stat3': '평균 평점',
+    'about-cta': '팀 만나기',
+    'about-years': '년의 탁월함',
+    'gallery-label': '작업물',
+    'gallery-title': '뮤즈의 스타일',
+    'gallery-subtitle': '매일 만들어지는 변신을 큐레이션한 컬렉션입니다.',
+    'g1-label': '발레아주 변신',
+    'g2-label': '프리시전 보브',
+    'g3-label': '자연스러운 컬러',
+    'g4-label': '실크 익스텐션',
+    'g5-label': '브라이덜 업두',
+    'g6-label': '글로싱 트리트먼트',
+    'g7-label': '볼륨 웨이브',
+    'g8-label': '리치 브루네트',
+    'gallery-cta': '전체 갤러리 보기',
+    'team-label': '아티스트들',
+    'team-title': '스타일리스트 소개',
+    'team-subtitle': '팀의 모든 구성원은 전문가입니다 — 열정적이고, 훈련된, 당신의 비전에 헌신하는.',
+    'stylist1-role': '창업자 &amp; 크리에이티브 디렉터',
+    'stylist1-bio': '컬러와 크리에이티브 디렉션에서 15년의 숙련도. 파리와 뉴욕에서 훈련받았습니다.',
+    'stylist2-role': '시니어 컬러리스트',
+    'stylist2-bio': '발레아주와 입체 컬러의 대가인 Marcus는 어디서나 시선을 끄는 룩을 만들어냅니다.',
+    'stylist3-role': '프리시전 컷 스페셜리스트',
+    'stylist3-bio': '면도날처럼 선명한 보브와 변신 컷으로 유명한 Sofia는 모든 의자에 조각적인 정밀함을 가져옵니다.',
+    'stylist4-role': '익스텐션 &amp; 텍스처 전문가',
+    'stylist4-bio': '매끄러운 익스텐션과 텍스처 작업을 전문으로 하는 Naomi는 완전히 자연스러운 볼륨을 만들어냅니다.',
+    'testimonials-label': '따뜻한 말씀',
+    'testimonials-title': '고객 후기',
+    'review1-text': '"많은 살롱에 가봤지만, 뮤즈는 완전히 다릅니다. 제 발레아주는 잡지에서 나온 것 같았어요. 다른 곳에는 가지 않을 거예요."',
+    'review1-since': '2019년부터 단골 고객',
+    'review2-text': '"분위기만으로도 방문할 가치가 있습니다. 스타일리스트가 모든 세부 사항에 귀 기울여 제가 상상한 것 이상으로 만들어줬어요."',
+    'review2-since': '컬러 &amp; 컷 고객',
+    'review3-text': '"웨딩데이에 뮤즈에 제 머리를 맡겼고, 행복한 눈물이 나왔어요. 절대 잊을 수 없는 경험이었습니다."',
+    'review3-since': '브라이덜 고객, 2025',
+    'book-headline': '변신할 준비가<br/><em style="font-style:italic;color:#C5A158;">되셨나요?</em>',
+    'book-subtitle': '오늘 예약하고 항상 꿈꿔온 자신의 모습으로 발걸음을 내딛으세요. 신규 및 기존 고객 모두 환영합니다.',
+    'book-cta1': '전화 예약',
+    'book-cta2': '온라인 예약',
+    'book-hours-label': '영업 시간',
+    'book-hours': '화 – 금: 오전 9시 – 오후 7시<br/>토: 오전 9시 – 오후 5시<br/>일 – 월: 휴무',
+    'book-location-label': '위치',
+    'book-contact-label': '연락처',
+    'footer-tagline': '공예, 소통, 그리고 당신만의 독특한 아름다움을 축하하는 럭셔리 헤어 스튜디오.',
+    'footer-col-services': '서비스',
+    'footer-col-studio': '스튜디오',
+    'footer-col-contact': '연락처',
+    'footer-s1': '컷 &amp; 스타일링',
+    'footer-s2': '컬러 &amp; 하이라이트',
+    'footer-s3': '트리트먼트',
+    'footer-s4': '익스텐션',
+    'footer-s5': '브라이덜',
+    'footer-st1': '소개',
+    'footer-st2': '우리 팀',
+    'footer-st3': '갤러리',
+    'footer-st4': '기프트 카드',
+    'footer-st5': '채용',
+    'footer-copyright': '© 2026 뮤즈 헤어 살롱. 모든 권리 보유.',
+    'footer-privacy': '개인정보처리방침',
+    'footer-terms': '이용약관',
+  },
+
+  zh: {
+    'nav-services': '服务',
+    'nav-gallery': '作品集',
+    'nav-about': '关于',
+    'nav-team': '团队',
+    'nav-reviews': '评价',
+    'nav-book-now': '立即预约',
+    'hero-label': '创立于 2015 年 &nbsp;·&nbsp; 高端美发沙龙',
+    'hero-headline': '美丽化为<br/><em style="font-style:italic;color:#C5A158;">艺术之处</em>',
+    'hero-subtitle': '风格与精致的避风港。我们打造个性化造型，彰显您的独特魅力，令您光彩照人。',
+    'hero-cta1': '预约服务',
+    'hero-cta2': '探索服务',
+    'hero-scroll': '向下滚动',
+    'quote-text': '"坐在我们椅子上的每位顾客都是我们的缪斯——每次预约都是展现最美丽自己的机会。"',
+    'quote-author': 'Isabelle Laurent，创始人',
+    'services-label': '我们的服务',
+    'services-title': '招牌服务',
+    'services-subtitle': '从精准剪发到变革性染色——每项服务都为您量身定制。',
+    's1-title': '剪发 &amp; 造型',
+    's1-desc': '精准剪发，突显您的面部轮廓——从经典波波头到现代层次感，应有尽有。',
+    's1-price': '起价 $85',
+    's2-title': '染发 &amp; 挑染',
+    's2-desc': '立体渐染、丰富的单色染发和自然挑染——由我们的首席染发师精心调配。',
+    's2-price': '起价 $120',
+    's3-title': '护理 &amp; 养护',
+    's3-desc': '修复性角蛋白护理、深度滋润仪式和头皮疗法，重塑光泽与长期活力。',
+    's3-price': '起价 $95',
+    's4-title': '接发 &amp; 丰量',
+    's4-desc': '无痕胶带接发、手工编织发片和热熔接发，打造令人惊艳的发长、发量与奢华感。',
+    's4-price': '起价 $250',
+    'services-cta': '查看完整服务菜单',
+    'about-label': '我们的故事',
+    'about-headline': '缪斯<br/><em style="font-style:italic;color:#C5A158;">体验</em>',
+    'about-p1': '缪斯美发沙龙源于对美的热情与对技艺的崇敬，秉持一个简单的信念——每个人都值得感受非凡。',
+    'about-p2': '我们屡获殊荣的造型师将数十年的专业经验融入每次预约，将艺术性与精准性完美融合。从您踏入门口的那一刻到最终呈现，每个细节都旨在让您感受到被珍视、被赞美、被蜕变。',
+    'about-stat1': '满意客户',
+    'about-stat2': '专业造型师',
+    'about-stat3': '平均评分',
+    'about-cta': '认识团队',
+    'about-years': '年卓越经验',
+    'gallery-label': '作品展示',
+    'gallery-title': '缪斯作品',
+    'gallery-subtitle': '精选每日创作的蜕变造型。',
+    'g1-label': '渐染蜕变',
+    'g2-label': '精准波波头',
+    'g3-label': '自然色调',
+    'g4-label': '丝滑接发',
+    'g5-label': '婚礼盘发',
+    'g6-label': '焕光护理',
+    'g7-label': '蓬松卷发',
+    'g8-label': '深棕造型',
+    'gallery-cta': '查看完整作品集',
+    'team-label': '我们的艺术家',
+    'team-title': '认识您的造型师',
+    'team-subtitle': '我们团队的每位成员都是专家——充满热情、经过专业培训，致力于实现您的愿景。',
+    'stylist1-role': '创始人 &amp; 创意总监',
+    'stylist1-bio': '在染发和创意指导领域拥有15年的精湛技艺，曾在巴黎和纽约接受专业培训。',
+    'stylist2-role': '首席染发师',
+    'stylist2-bio': '渐染和立体色彩大师，Marcus创造的造型在任何场合都令人瞩目。',
+    'stylist3-role': '精准剪发专家',
+    'stylist3-bio': 'Sofia以锋利的波波头和变革性剪发著称，为每位顾客带来雕塑般的精准造型。',
+    'stylist4-role': '接发 &amp; 纹理专家',
+    'stylist4-bio': 'Naomi专注于无痕接发和纹理造型，打造完全自然的蓬松效果。',
+    'testimonials-label': '客户心声',
+    'testimonials-title': '顾客评价',
+    'review1-text': '"我去过很多沙龙，但缪斯完全不同。我的渐染效果好像出自杂志。我不会去其他任何地方了。"',
+    'review1-since': '2019年起忠实顾客',
+    'review2-text': '"仅凭氛围就值得一来。我的造型师聆听了每一个细节，呈现出超出我想象的效果。彻底蜕变了。"',
+    'review2-since': '染发 &amp; 剪发顾客',
+    'review3-text': '"我把婚礼当天的发型交给了缪斯，她们打造了让我流下幸福泪水的造型。绝对难忘的体验。"',
+    'review3-since': '婚礼顾客，2025',
+    'book-headline': '准备好迎接<br/><em style="font-style:italic;color:#C5A158;">您的蜕变了吗？</em>',
+    'book-subtitle': '今天预约，踏入您一直向往的自己。欢迎新老顾客。',
+    'book-cta1': '电话预约',
+    'book-cta2': '在线预约',
+    'book-hours-label': '营业时间',
+    'book-hours': '周二 – 周五：上午9时 – 下午7时<br/>周六：上午9时 – 下午5时<br/>周日 – 周一：休息',
+    'book-location-label': '地址',
+    'book-contact-label': '联系方式',
+    'footer-tagline': '致力于工艺、连接和彰显您独特美丽的高端美发工作室。',
+    'footer-col-services': '服务',
+    'footer-col-studio': '工作室',
+    'footer-col-contact': '联系我们',
+    'footer-s1': '剪发 &amp; 造型',
+    'footer-s2': '染发 &amp; 挑染',
+    'footer-s3': '护理',
+    'footer-s4': '接发',
+    'footer-s5': '婚礼',
+    'footer-st1': '关于我们',
+    'footer-st2': '我们的团队',
+    'footer-st3': '作品集',
+    'footer-st4': '礼品卡',
+    'footer-st5': '招聘',
+    'footer-copyright': '© 2026 缪斯美发沙龙。版权所有。',
+    'footer-privacy': '隐私政策',
+    'footer-terms': '服务条款',
+  }
+};
+
+// ─── SET LANGUAGE ────────────────────────────────────────────────────────────
+function setLanguage(lang) {
+  const t = translations[lang];
+  if (!t) return;
+
+  // Text/HTML updates (innerHTML handles &amp; entities and &nbsp; correctly)
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+
+  // HTML content updates (for elements with <br>, <em>, etc.)
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+
+  // Update <html lang> attribute
+  document.documentElement.lang = lang === 'zh' ? 'zh-Hans' : lang;
+
+  // Update active button state
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+  });
+
+  // Persist choice
+  localStorage.setItem('muse-lang', lang);
+}
+
+// ─── LANGUAGE TOGGLE WIRING ──────────────────────────────────────────────────
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang')));
+});
+
+// Restore persisted language on load
+const savedLang = localStorage.getItem('muse-lang');
+if (savedLang && translations[savedLang]) setLanguage(savedLang);
+
+// ─── NAV SCROLL ──────────────────────────────────────────────────────────────
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 64);
+}, { passive: true });
+
+// ─── SCROLL REVEAL ───────────────────────────────────────────────────────────
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const siblings = [...entry.target.parentElement.querySelectorAll('.reveal:not(.visible)')];
+      const idx = siblings.indexOf(entry.target);
+      setTimeout(() => entry.target.classList.add('visible'), idx * 80);
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+</script>
+
+</body>
+</html>
