@@ -249,22 +249,10 @@
 </head>
 <body>
 
-<!-- SVG filter: keys out white background from logo PNG -->
-<svg width="0" height="0" style="position:absolute;">
-  <defs>
-    <filter id="remove-white" color-interpolation-filters="sRGB" x="0" y="0" width="1" height="1">
-      <feColorMatrix type="matrix" values="1 0 0 0 0
-                                           0 1 0 0 0
-                                           0 0 1 0 0
-                                          -1 -1 -1 3 0" />
-    </filter>
-  </defs>
-</svg>
-
 <!-- NAVIGATION -->
 <nav id="navbar">
   <a href="#" style="flex-shrink:0;">
-    <img src="brand_assets/Muse%20Hair%20Salon.png" alt="Muse Hair Salon" style="height:57px;width:auto;display:block;filter:url(#remove-white) drop-shadow(0 2px 8px rgba(0,0,0,0.3));" />
+    <img src="brand_assets/Muse%20Hair%20Salon.png" class="logo-img" alt="Muse Hair Salon" style="height:57px;width:auto;display:block;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.3));" />
   </a>
 
   <div class="nav-desktop-links" style="display:flex;align-items:center;gap:40px;">
@@ -621,7 +609,7 @@
 <section id="book" style="background:#EDE8DF;padding:112px 48px;text-align:center;position:relative;overflow:hidden;">
   <div aria-hidden="true" style="position:absolute;inset:0;background:radial-gradient(ellipse 65% 85% at 50% 50%,rgba(197,161,88,0.09) 0%,transparent 65%);pointer-events:none;"></div>
   <div class="reveal" style="max-width:680px;margin:0 auto;position:relative;">
-    <img src="brand_assets/Muse%20Hair%20Salon.png" alt="Muse Hair Salon" style="height:76px;width:auto;margin:0 auto 40px;display:block;opacity:0.88;" />
+    <img src="brand_assets/Muse%20Hair%20Salon.png" class="logo-img" alt="Muse Hair Salon" style="height:76px;width:auto;margin:0 auto 40px;display:block;opacity:0.88;" />
     <h2 style="font-family:'Playfair Display',serif;font-size:clamp(38px,5vw,64px);font-weight:600;letter-spacing:-0.03em;line-height:1.08;color:#1E1E26;margin-bottom:22px;" data-i18n-html="book-headline">
       Ready for Your<br/><em style="font-style:italic;color:#C5A158;">Transformation?</em>
     </h2>
@@ -655,7 +643,7 @@
   <div style="max-width:1240px;margin:0 auto;">
     <div class="footer-grid" style="display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:56px;margin-bottom:64px;">
       <div>
-        <img src="brand_assets/Muse%20Hair%20Salon.png" alt="Muse Hair Salon" style="height:58px;width:auto;margin-bottom:22px;display:block;opacity:0.92;" />
+        <img src="brand_assets/Muse%20Hair%20Salon.png" class="logo-img" alt="Muse Hair Salon" style="height:58px;width:auto;margin-bottom:22px;display:block;opacity:0.92;" />
         <p style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;line-height:1.78;color:rgba(247,243,236,0.4);margin-bottom:28px;max-width:230px;" data-i18n="footer-tagline">
           A luxury hair studio dedicated to craft, connection, and celebrating your unique beauty.
         </p>
@@ -1107,5 +1095,42 @@ const revealObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 </script>
 
+
+<script>
+/* Remove warm off-white/cream background from logo PNGs via canvas.
+   Keying threshold matches the logo's ~rgb(245,243,238) background.
+   Processes at native resolution so the result stays crisp. */
+(function () {
+  function stripBackground(img) {
+    try {
+      var c = document.createElement('canvas');
+      c.width = img.naturalWidth;
+      c.height = img.naturalHeight;
+      var ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      var px = ctx.getImageData(0, 0, c.width, c.height);
+      var d = px.data;
+      for (var i = 0; i < d.length; i += 4) {
+        /* Key out any pixel brighter than ~rgb(215,210,200) —
+           catches pure white, near-white, and warm cream tones
+           while preserving charcoal ink and gold accents. */
+        if (d[i] > 215 && d[i + 1] > 210 && d[i + 2] > 200) {
+          d[i + 3] = 0;
+        }
+      }
+      ctx.putImageData(px, 0, 0);
+      img.src = c.toDataURL('image/png');
+    } catch (e) { /* cross-origin guard — no-op */ }
+  }
+
+  document.querySelectorAll('img.logo-img').forEach(function (img) {
+    if (img.complete && img.naturalWidth > 0) {
+      stripBackground(img);
+    } else {
+      img.addEventListener('load', function () { stripBackground(img); }, { once: true });
+    }
+  });
+}());
+</script>
 </body>
 </html>
